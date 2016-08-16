@@ -13,12 +13,16 @@ if [ -z "$BLOB_DESTINATION" ]; then
   exit 1
 fi
 
-if [ -z "$BLOB_VERSION" ]; then
-  echo "must specify \$BLOB_VERSION" >&2
+if [ -z "$BLOB_VERSION" ] || [ -z "$BLOB_VERSION_FILE" ] ; then
+  echo "must specify \$BLOB_VERSION or \$BLOB_VERSION_FILE" >&2
   exit 1
 fi
 
 blob_dir=$PWD/blob-dir
+
+if [ -n $BLOB_VERSION_FILE ]; then
+  BLOB_VERSION=`cat ${blob_dir}/${BLOB_VERSION_FILE}`
+fi
 
 git config --global user.email "ci@localhost"
 git config --global user.name "CI Bot"
