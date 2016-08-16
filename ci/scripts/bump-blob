@@ -32,6 +32,8 @@ cp deployments/ci/config/private.yml bumped-concourse/config/private.yml
 
 cd bumped-concourse/
 
+mv $blob_dir/*.tar.gz $blob_dir/${BLOB_NAME}.tar.gz
+
 bosh -n add blob $blob_dir/${BLOB_NAME}.tar.gz ${BLOB_DESTINATION}
 bosh -n upload blobs
 
