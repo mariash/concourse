@@ -15,17 +15,11 @@ jobs:
       BLOB_NAME: btrfs-tools
       BLOB_VERSION: 4.4
       BLOB_DESTINATION: btrfs
+      BOSH_PRIVATE_CONFIG: {{bosh-private-config}}
   - put: concourse
     params: {repository: bumped-concourse, rebase: true}
 
 resources:
-- name: deployments
-  type: git
-  source:
-    uri: git@github.com:concourse/deployments.git
-    branch: master
-    private_key: {{deployments-repo-private-key}}
-
 - name: concourse
   type: git
   source:

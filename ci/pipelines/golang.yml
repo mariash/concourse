@@ -1,0 +1,42 @@
+jobs:
+- name: bump-golang
+  serial: true
+  public: true
+  plan:
+  - aggregate:
+    - get: golang-linux
+      trigger: true
+    - get: concourse
+    - get: deployments
+  - task: bump-blob
+    input_mapping:
+      blob-dir: golang-linux
+    file: concourse/ci/bump-blob.yml
+    params:
+      BLOB_NAME: golang-linux-amd64
+      BLOB_VERSION_FILE: version
+      BLOB_DESTINATION: golang
+  - put: concourse
+    params: {repository: bumped-concourse, rebase: true}
+
+resources:
+- name: golang-linux
+  type: s3
+  source:
+    endpoint: storage.googleapis.com
+    bucket: golang
+    regexp: 'go(1\.\d+(\.\d+)?)\.linux-amd64\.tar.gz'
+
+- name: deployments
+  type: git
+  source:
+    uri: git@github.com:concourse/deployments.git
+    branch: master
+    private_key: {{deployments-repo-private-key}}
+
+- name: concourse
+  type: git
+  source:
+    uri: git@github.com:concourse/concourse.git
+    branch: develop
+    private_key: {{concourse-repo-private-key}}
